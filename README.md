@@ -1,36 +1,147 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WhereToSit
+
+**WhenToMeet, but for carpooling** 🚗
+
+A simple, clean web app for coordinating carpooling sessions with friends. Create a session, share the link, and let everyone choose their ride!
+
+## Features
+
+- 🎯 **Simple Sessions**: Create carpooling sessions with a single click
+- 👤 **Easy Login**: Join with just your name (optional password)
+- 🚗 **Drive or Ride**: Create a car as a driver or join as a passenger
+- 👥 **Real-time Updates**: See who's driving and who's riding instantly
+- 🔗 **Shareable Links**: Share session links with your group
+- 🎨 **Clean UI**: Minimalist design inspired by OpenAI's interface
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ installed
+- A Firebase account with a Realtime Database
+
+### Firebase Setup
+
+1. Create a new Firebase project at [Firebase Console](https://console.firebase.google.com/)
+
+2. Create a Realtime Database:
+   - Go to Build > Realtime Database
+   - Click "Create Database"
+   - Choose a location
+   - Start in **test mode** (or configure security rules as needed)
+
+3. Get your Firebase configuration:
+   - Go to Project Settings (gear icon)
+   - Scroll to "Your apps" and click the web icon (`</>`)
+   - Register your app
+   - Copy the configuration values
+
+4. Create a `.env.local` file in the project root:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.local.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Fill in your Firebase credentials in `.env.local`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key_here
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain_here
+NEXT_PUBLIC_FIREBASE_DATABASE_URL=your_database_url_here
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id_here
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket_here
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id_here
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id_here
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Installation
 
-## Learn More
+```bash
+# Install dependencies
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# Run development server
+npm run dev
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Build for production
+npm run build
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Start production server
+npm start
+```
 
-## Deploy on Vercel
+Open [http://localhost:3000](http://localhost:3000) to see the app.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## How to Use
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Creating a Session
+
+1. Click "Create New Session" on the home page
+2. Share the generated link with your friends
+
+### Joining a Session
+
+1. Open the session link
+2. Enter your name (and optional password)
+3. Click "Join"
+
+### Creating a Car (Driver)
+
+1. Click "Create a Car"
+2. Enter the total capacity (including yourself)
+3. Click "Create"
+
+### Joining a Car (Passenger)
+
+1. Browse available cars in the session
+2. Click "Join as Passenger" on your preferred car
+3. You'll see yourself listed under passengers
+
+### Leaving a Car
+
+- Click "Leave Car" to remove yourself from a car
+- If you're the driver, the car will be deleted
+
+## Technology Stack
+
+- **Framework**: Next.js 16 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Database**: Firebase Realtime Database
+- **Deployment**: Vercel (recommended)
+
+## Database Structure
+
+```typescript
+sessions/
+  {sessionId}/
+    createdAt: number
+    users/
+      {userId}/
+        id: string
+        name: string
+        password?: string
+    cars/
+      {carId}/
+        id: string
+        driverId: string
+        driverName: string
+        capacity: number
+        passengers: string[]
+        createdAt: number
+```
+
+## Security Considerations
+
+- The app currently uses Firebase Realtime Database in test mode
+- For production, configure proper Firebase security rules
+- Consider adding authentication for sensitive use cases
+- Session IDs are randomly generated and hard to guess
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is open source and available under the MIT License.
