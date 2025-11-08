@@ -32,9 +32,19 @@ export default function SessionPage({ params }: SessionPageProps) {
     const unsubscribe = onValue(sessionRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
+        // Check if session has expired
+        if (data.eventDate && data.eventDate < Date.now()) {
+          // Session has expired, delete it
+          set(sessionRef, null);
+          setSession(null);
+          setLoading(false);
+          return;
+        }
+        
         setSession({
           id: sessionId,
           createdAt: data.createdAt,
+          eventDate: data.eventDate,
           users: data.users || {},
           cars: data.cars || {},
         });
@@ -159,7 +169,7 @@ export default function SessionPage({ params }: SessionPageProps) {
       <div className="flex min-h-screen items-center justify-center bg-white">
         <div className="text-center">
           <h1 className="text-2xl font-semibold text-gray-900 mb-2">Session not found</h1>
-          <p className="text-gray-600">This session may not exist or has been deleted.</p>
+          <p className="text-gray-600">This session may not exist, has been deleted, or has expired.</p>
         </div>
       </div>
     );
@@ -223,12 +233,29 @@ export default function SessionPage({ params }: SessionPageProps) {
     return null; // This should never happen since we check showLogin above
   }
 
+  const formatEventDate = (timestamp: number) => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('en-US', { 
+      weekday: 'short', 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-semibold text-gray-900 mb-2">Carpooling Session</h1>
-          <p className="text-gray-600 mb-4">Welcome, {currentUser.name}!</p>
+          <p className="text-gray-600 mb-2">Welcome, {currentUser.name}!</p>
+          {session.eventDate && (
+            <p className="text-sm text-gray-500 mb-4">
+              📅 Event: {formatEventDate(session.eventDate)}
+            </p>
+          )}
           <button
             onClick={copyLink}
             className="text-sm px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"

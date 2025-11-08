@@ -16,6 +16,7 @@ export interface Car {
 export interface Session {
   id: string;
   createdAt: number;
+  eventDate?: number; // Optional: Date/time of the event
   users: { [userId: string]: User };
   cars: { [carId: string]: Car };
 }
