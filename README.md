@@ -7,11 +7,13 @@ A simple, clean web app for coordinating carpooling sessions with friends. Creat
 ## Features
 
 - 🎯 **Simple Sessions**: Create carpooling sessions with a single click
+- 📅 **Event Scheduling**: Optionally set event date/time with automatic session deletion
 - 👤 **Easy Login**: Join with just your name (optional password)
 - 🚗 **Drive or Ride**: Create a car as a driver or join as a passenger
 - 👥 **Real-time Updates**: See who's driving and who's riding instantly
 - 🔗 **Shareable Links**: Share session links with your group
 - 🎨 **Clean UI**: Minimalist design inspired by OpenAI's interface
+- ⏰ **Auto-Cleanup**: Sessions automatically delete after the event date passes
 
 ## Getting Started
 
@@ -76,8 +78,16 @@ Open [http://localhost:3000](http://localhost:3000) to see the app.
 
 ### Creating a Session
 
+**Option 1: Quick Create (no event date)**
 1. Click "Create New Session" on the home page
 2. Share the generated link with your friends
+
+**Option 2: Create with Event Date**
+1. Click "Create with Event Date" on the home page
+2. Select the event date and optionally the time
+3. Click "Create Session"
+4. The session will automatically delete after the event date passes
+5. Share the generated link with your friends
 
 ### Joining a Session
 
@@ -116,6 +126,7 @@ Open [http://localhost:3000](http://localhost:3000) to see the app.
 sessions/
   {sessionId}/
     createdAt: number
+    eventDate?: number // Optional: timestamp of event, session auto-deletes after this
     users/
       {userId}/
         id: string
@@ -136,7 +147,9 @@ sessions/
 - The app currently uses Firebase Realtime Database in test mode
 - For production, configure proper Firebase security rules
 - Consider adding authentication for sensitive use cases
-- Session IDs are randomly generated and hard to guess
+- Session IDs are generated using cryptographically secure random methods (crypto.randomUUID)
+- Sessions with event dates automatically delete after the event passes
+- Expired sessions are immediately removed when accessed
 
 ## Contributing
 
